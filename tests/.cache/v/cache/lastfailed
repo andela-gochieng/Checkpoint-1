@@ -1,0 +1,10 @@
+{
+  "test_amity.py::TestRooms::test_allocate_office_to_fellow": true, 
+  "test_amity.py::TestRooms::test_allocate_office_to_staff": true, 
+  "test_amity.py::TestRooms::test_allocate_room_in_fully_booked_room": true, 
+  "test_amity.py::TestRooms::test_allocate_room_to_fellow": true, 
+  "test_amity.py::TestRooms::test_allocate_room_to_staff": true, 
+  "test_amity.py::TestRooms::test_create_livingspace": true, 
+  "test_amity.py::TestRooms::test_create_office": true, 
+  "test_amity.py::TestRooms::test_create_room_duplicate_rooms": true
+}
