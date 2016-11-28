@@ -1,4 +1,4 @@
-#from mock import patch
+
 import unittest
 
 from app.amity import Amity
@@ -9,11 +9,6 @@ class TestRooms(unittest.TestCase):
 		
 		self.amity = Amity()
 
-	#@patch.dict('app.amity.Amity.rooms', {'livingspaces': []})
-	#def test_it_creates_livingspaces(self):
-		#details = self.room.create_livingspace('Emerald')
-		#self.assertIn('Emerald', self.rooms[livingspaces])
-
 	def test_create_livingspace(self):
 		self.amity.create_room('Yellow')
 		self.assertIn('Yellow',self.amity.rooms['livingspaces'])
@@ -23,11 +18,13 @@ class TestRooms(unittest.TestCase):
 		self.assertIn('Purple',self.amity.rooms['offices'])
 
 	def test_create_room_duplicate_rooms(self):
+		self.amity.create_room('Yellow')
 		creation = self.amity.create_room('Yellow')
 		self.assertEqual(creation, 'A room with that name already exists')
 
 
 	def test_get_details_room(self):
+		self.test_create_livingspace
 		details = self.amity.get_details_room('Yellow')
 		self.assertEqual(details,self.amity.details)
 
