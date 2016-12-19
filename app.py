@@ -28,9 +28,9 @@ import pyfiglet
 import colorama
 from termcolor import *
 from docopt import docopt, DocoptExit
-from amity import Amity
-from person import Person, Staff, Fellow
-from room import Room, Livingspace, Office
+from app.amity import Amity
+from app.person import Person, Staff, Fellow
+from app.room import Room, Livingspace, Office
 
 colorama.init()
 
