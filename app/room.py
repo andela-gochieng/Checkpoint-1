@@ -1,37 +1,43 @@
-from app.amity import Amity
+#from app.amity import Amity
+
 
 class Room(object):
-	offices = {}
-	livingspaces = {}
-	office_occupants =[]
-	chamber_occupants =[]
-	
+    ''' Class Room models the rooms in Amity. The two types of rooms, Office and
+    Livingspace inherit from it.'''
+
+    rooms = {"office": {}, "livingspace": {}}
+
+    def __init__(self, room_name, room_type, max_occupants, current_capacity=0):
+        self.room_name = room_name
+        self.room_type = room_type
+        self.max_occupants = max_occupants
+        self.rooms[room_type][room_name] = {}
+        self.rooms[room_type][room_name]['Room_name'] = room_name
+        self.rooms[room_type][room_name]['Max_occupants'] = max_occupants
+        self.rooms[room_type][room_name]['Occupants'] = []
+        self.rooms[room_type][room_name]['Total_occupants'] = 0
+
+    @staticmethod
+    def allocate_room(ID, room_name):
+        if room_name in Room.rooms['office'].keys():
+            room_type = 'office'
+        elif room_name in Room.rooms['livingspace'].keys():
+            room_type = 'livingspace'
+        Room.rooms[room_type][room_name]['Occupants'].append(ID)
+        Room.rooms[room_type][room_name]['Total_occupants'] += 1
+
 
 class Office(Room):
-	max_occupants = 6
-	
-	def __init__(self):
-		self.current_capacity = 0
-
-	def allocate_office(self,x):
-		pass
-	
-	def available_slots(self):
-		pass
-	def get_details(self,a):
-		pass
+    def __init__(self, room_name=[], max_occupants=6):
+        super(Office, self).__init__(room_name, 'office', max_occupants)
 
 
-class LivingSpace(Room):
-	max_occupants = 4
+class Livingspace(Room):
+    max_occupants = 4
 
-	def __init__(self):
-		self.current_capacity = 0
+    def __init__(self, room_name=[], max_occupants=4):
+        super(Livingspace, self).__init__(
+            room_name, 'livingspace', max_occupants)
 
-	def allocate_room(self,a):
-		pass
-																													
-	def available_slots(self):
-		pass
-	def get_details(self,a):
-		pass
+
+

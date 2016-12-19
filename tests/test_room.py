@@ -1,11 +1,11 @@
 import unittest
-from app.room import Room,Office, LivingSpace
+from app.room import Room,Office, Livingspace
 
 class TestRoom(unittest.TestCase):
 
 	def setUp(self):
 		self.office = Office()
-		self.chamber = LivingSpace()
+		self.chamber = Livingspace()
 
 
 	def test_allocate_office_to_staff(self):
@@ -17,15 +17,15 @@ class TestRoom(unittest.TestCase):
 		self.assertEqual('Successfully booked into Purple',allocation)
 
 	def test_allocate_room_to_fellow(self):
-		allocation = self.chamber.allocate_room(4)
+		allocation = self.chamber.allocate_quarters(4)
 		self.assertEqual('Successfully booked into Yellow',allocation)
 
 	def test_allocate_room_to_staff(self):
-		allocation = self.chamber.allocate_room(3)
+		allocation = self.chamber.allocate_quarters(3)
 		self.assertEqual('As staff you cannot be allocated living space',allocation)
 
 	def test_allocate_room_in_fully_booked_room(self):
-		allocation = self.chamber.allocate_room(6)
+		allocation = self.chamber.allocate_quarters(6)
 		self.assertEqual('Room Yellow is fully occupied',allocation)
 
 	def test_capacity(self):
