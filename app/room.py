@@ -33,8 +33,6 @@ class Office(Room):
 
 
 class Livingspace(Room):
-    max_occupants = 4
-
     def __init__(self, room_name=[], max_occupants=4):
         super(Livingspace, self).__init__(
             room_name, 'livingspace', max_occupants)

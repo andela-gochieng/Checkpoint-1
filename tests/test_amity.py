@@ -15,12 +15,8 @@ class TestAmity(unittest.TestCase):
         self.amity = Amity()
 
     def test_returns_error_if_input_is_nonalphabetical(self):
-        self.assertEqual(self.amity.create_room(['123'],'office'), 'Invalid room name type')
-        #print os.getcwd()
+        self.assertIn('123 is an invalid room name type', self.amity.create_room(['123'],'office'))
 
-    def test_returns_error_given_wrong_roomtype(self):
-        self.assertEqual(self.amity.create_room(['Purple'],'workspace'), 'Room type can only be office or livingspace')
-        #print os.getcwd()
 
     def test_create_room(self):
         self.amity.create_room(["Pink"], "office")
@@ -68,20 +64,20 @@ class TestAmity(unittest.TestCase):
     @patch.object(Amity, "offices", 0)
     @patch.object(Amity, "livingspaces", 0)
     def test_create_room_duplicate_rooms(self):
-        self.assertEqual(self.amity.create_room(['Yellow'], 'office'), 'A room with that name exists. Select another name')
+        self.assertIn('A room with that name exists. Select another name', self.amity.create_room(['Yellow'], 'office'))
             
     '''This section tests the functionality of adding a person to the system, 
     allocation of rooms and reallocation of a person from one room to another'''
 
     def test_only_alphabetical_names_allowed(self):
-        self.assertEqual(self.amity.add_person('1234','Menjo', 'fellow'), 'Invalid name format. Alphabets only')
-        self.assertEqual(self.amity.add_person('Menjo','1234', 'fellow'), 'Invalid name format. Alphabets only')
+        self.assertIn('Invalid name format. Alphabets only', self.amity.add_person('1234','Menjo', 'fellow'))
+        self.assertIn('Invalid name format. Alphabets only', self.amity.add_person('Menjo','1234', 'fellow'))
 
     def test_restriction_on_job_designation(self):
-        self.assertEqual(self.amity.add_person('Charlie', 'Kip', 'worker'),'Enter a valid designation' )
+        self.assertIn('Enter a valid designation' , self.amity.add_person('Charlie', 'Kip', 'worker'))
 
     def test_restriction_on_residence(self):
-        self.assertEqual(self.amity.add_person('Charlie', 'Kip', 'fellow', 'R'),'Respond with Y or N for residence' )
+        self.assertIn('Respond with Y or N for residence', self.amity.add_person('Charlie', 'Kip', 'fellow', 'R') )
 
     def test_new_person_gets_ID(self):
         self.amity.add_person('Mary','Chepkoech', 'staff')
@@ -141,16 +137,6 @@ class TestAmity(unittest.TestCase):
         self.assertIn('FE01', Room.rooms['office']['Brown']['Occupants'])
         self.assertIn('FE01', Room.rooms['livingspace']['Beige']['Occupants'])
 
-    @patch.dict('app.room.Room.rooms', {
-                    "office": {},
-                    "livingspace": {}
-                })
-    @patch.dict('app.person.Person.people', {
-                    "staff": {},
-                    "fellow": {}
-                })
-    @patch.object(Amity, "offices", 0)
-    @patch.object(Amity, "livingspaces", 0)
     def test_reallocate_person(self):
         self.amity.create_room(['Brown'],'office')
         self.amity.create_room(['Beige'], 'livingspace')

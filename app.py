@@ -24,7 +24,7 @@ Options:
 import sys
 import cmd
 import os
-import pyfiglet
+from pyfiglet import *
 import colorama
 from termcolor import *
 from docopt import docopt, DocoptExit
@@ -89,7 +89,7 @@ def red(string):
 
 def intro():
     os.system("clear")
-    pyfiglet.print_figlet("AMITY", 'slant')
+    cprint(figlet_format("AMITY", 'banner'), 'red')
     print('-' * 40)
     print(blue('Automated Space Allocation System'))
     print('-' * 40)
@@ -130,7 +130,7 @@ class Facilities(cmd.Cmd):
         """
         firstname = args["<firstname>"].capitalize()
         surname = args['<surname>'].capitalize()
-        designation = args['<designation>']
+        designation = args['<designation>'].lower()
         resident = args['<wants_accommodation>'].upper() if args['<wants_accommodation>'] else 'N'
         print Amity().add_person(firstname, surname, designation, resident)
 

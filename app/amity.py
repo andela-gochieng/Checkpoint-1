@@ -46,15 +46,11 @@ class Amity(object):
         The room name is a list to allow the creation of several rooms at once.
         '''
 
-        if room_type != 'office' and room_type != 'livingspace':
-            return 'Room type can only be office or livingspace'
         for room_name in room_names:
             if room_name.isalpha() is False:
-                print(red('Invalid room name type!'))
-                return 'Invalid room name type'
+                return red(room_name + ' is an invalid room name type!')
             if room_name in Room.rooms['office'] or room_name in Room.rooms['livingspace']:
-                print (red('A room with that name exists. Select another name'))
-                return 'A room with that name exists. Select another name'
+                return red('A room with that name exists. Select another name')
             if room_type == 'office':
                 Office(room_name)
                 Amity.offices += 1
@@ -71,23 +67,25 @@ class Amity(object):
         generated for each person for easy referencing '''
 
         if not firstname.isalpha() or not surname.isalpha():
-            return 'Invalid name format. Alphabets only'
+            return red('Invalid name format. Alphabets only')
         if resident != 'N' and resident != 'Y':
-            return 'Respond with Y or N for residence'
+            return red('Respond with Y or N for residence')
         if designation != 'staff' and designation != 'fellow':
-            return 'Enter a valid designation'
+            return red('Enter a valid designation')
+        if designation == 'staff' and resident == 'Y':
+            return red('Staff cannot be allocated livingspaces.')
         elif designation == 'staff':
             ID = 'ST0' + str(len(Person.people['staff'].keys()) + 1)
             Staff(firstname, surname, ID)
-            print (cyan(str(firstname) + ' ' + str(surname) + ' has been created as a staff.'))
-            self.allocate_room(ID, 'office')
+            return (cyan(str(firstname) + ' ' + str(surname) + ' has been created as a staff') + " " + self.allocate_room(ID, 'office'))
         elif designation == 'fellow':
             ID = 'FE0' + str(len(Person.people['fellow'].keys()) + 1)
             Fellow(firstname, surname, ID, resident)
-            print (cyan(str(firstname) + ' ' + str(surname) + ' has been added as a fellow.'))
-            self.allocate_room(ID, 'office')
+            msg = str(firstname) + ' ' + str(surname) + ' has been added as a fellow'
+            msg += " " + self.allocate_room(ID, 'office')
             if resident == 'Y':
-                self.allocate_room(ID, 'livingspace')
+                msg += " " + self.allocate_room(ID, 'livingspace')
+            return cyan(msg)
 
     def allocate_room(self, ID, room_type):
         '''Allocate room adds a person to a room once a person has been
@@ -95,18 +93,20 @@ class Amity(object):
         the system. It also adds fellows who want accomodation to the available
         livingspaces. It passes the person's ID and room name to the
         allocate_room method in the Room class.  '''
+
         room_list = Room.rooms[room_type].keys()
         for room in room_list:
             if Room.rooms[room_type][room]['Total_occupants'] < Room.rooms[room_type][room]['Max_occupants']:
                 Amity.available_rooms.append(room)
         if len(Amity.available_rooms) == 0:
             Amity.unallocated_people.append(ID)
-            print(red('There are no available %s' % room_type + 's for allocation.'))
+            Amity.available_rooms = []
+            return (red('\nThere are no available %s' % room_type + 's for allocation.'))
         elif len(Amity.available_rooms) >= 1:
             random_room = choice(Amity.available_rooms)
             Room.allocate_room(ID, random_room)
-            print(green('and has been allocated space in ' + str(random_room)))
-        Amity.available_rooms = []
+            Amity.available_rooms = []
+            return (cyan('and has been allocated space in ' + str(random_room)))
 
     def reallocate(self, ID, room_name):
         ''' This method provides the option of reallocating a person to a
@@ -189,11 +189,11 @@ class Amity(object):
             print '*' * 40
             for key in Room.rooms['livingspace']:
                 if len(Room.rooms['livingspace'][key]['Occupants']) == 0:
-                    print (yellow('\n\t' + key))
+                    print yellow('\n\t' + key)
                     print '\n----------------------------\n'
                     print (red('No occupants'))
                 elif len(Room.rooms['livingspace'][key]['Occupants']) != 0:
-                    print '\n\t' + key
+                    print yellow('\n\t' + key)
                     print '\n----------------------------\n'
                     for ID in Room.rooms['livingspace'][key]['Occupants']:
                         liv_occupants.append(Person.get_details(ID))
@@ -207,6 +207,7 @@ class Amity(object):
                             output += '\n----------------------------\n'
                             output += ', '.join(liv_occupants) + '\n'
                             f.write(output)
+                    print green('Allocations printed. Check file.')
         allocations['off_occupants'] = off_occupants
         allocations['liv_occupants'] = liv_occupants
         return allocations
@@ -220,20 +221,22 @@ class Amity(object):
             return 'There are no unallocated people'
 
         if filename is None:
-            print (cyan('\n\tUnallocated people'))
-            print '------------------------\n'
+            print (cyan('\nUnallocated people'))
+            print '----------------------\n'
             for ID in Amity.unallocated_people:
                 print Person.get_details(ID)
             return Person.get_details(ID)
         if filename is not None and type(filename) is str:
-            os.remove(filename)
-            with open(filename, 'a') as f:
-                output = '\n\tUnallocated people\n'
-                output += '------------------------\n'
-                for ID in Amity.unallocated_people:
-                    output += Person.get_details(ID) + '\n'
-                f.write(output)
-                print 'Unallocated people printed. Check document.'
+            try:
+                os.remove(filename)
+            except:
+                with open(filename, 'a') as f:
+                    output = '\n\tUnallocated people\n'
+                    output += '------------------------\n'
+                    for ID in Amity.unallocated_people:
+                        output += Person.get_details(ID) + '\n'
+                    f.write(output)
+                    print green('Unallocated people printed. Check file.')
 
     def print_room(self, room_name):
         if not room_name in Room.rooms['office'] and room_name not in Room.rooms['livingspace']:
@@ -278,6 +281,7 @@ class Amity(object):
                         else:
                             resident = 'N'
                         self.add_person(firstname, surname, designation, resident)
+                    return green('Success! Data added to the system')
             except:
                 return (red('No such file exists!'))
 
