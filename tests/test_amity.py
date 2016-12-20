@@ -15,7 +15,7 @@ class TestAmity(unittest.TestCase):
         self.amity = Amity()
 
     def test_returns_error_if_input_is_nonalphabetical(self):
-        self.assertIn('123 is an invalid room name type', self.amity.create_room(['123'],'office'))
+        self.assertIn('123 is an invalid name type!', self.amity.create_room(['123'],'office'))
 
 
     def test_create_room(self):
@@ -194,7 +194,7 @@ class TestAmity(unittest.TestCase):
     def test_print_room_with_occupants(self):
         self.amity.create_room(['Brown'],'office')
         self.amity.add_person('Sophie', 'Njeri','fellow')
-        self.assertIn('FE01 -> Sophie Njeri', self.amity.print_room('Brown'))
+        self.assertIn('FE01 Sophie Njeri', self.amity.print_room('Brown'))
 
         
     # Tests the printing of unallocated persons
@@ -276,7 +276,7 @@ class TestAmity(unittest.TestCase):
     @patch.object(Amity, "livingspaces", 0)
     def test_print_allocations_with_occupants_in_rooms(self):
         res = self.amity.print_allocations()
-        self.assertIn('ST01 -> Mary Chepkoech', res['off_occupants'])
+        self.assertIn('ST01 Mary Chepkoech', res['off_occupants'])
 
     # Tests for the load people method begins here
 
