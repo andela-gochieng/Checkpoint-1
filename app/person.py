@@ -17,9 +17,9 @@ class Person(object):
         if ID not in Person.people['staff'] and ID not in Person.people['fellow']:
             return 'ID not found!'
         if ID in Person.people['staff']:
-            return ID + ' -> ' + Person.people['staff'][ID]['Name']
+            return ID+ ' ' + Person.people['staff'][ID]['Name']
         elif ID in Person.people['fellow']:
-            return ID + ' -> ' + Person.people['fellow'][ID]['Name'] 
+            return ID+ ' '+ Person.people['fellow'][ID]['Name'] 
 
 
 class Fellow(Person):

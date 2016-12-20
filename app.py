@@ -113,13 +113,13 @@ class Facilities(cmd.Cmd):
 
     @docopt_cmd
     def do_create_room(self, args):
-        """Usage: create_room (office | livingspace) <room_name>...
+        """Usage: create_room <room_type> <room_name>...
         """
         room_names = []
         for room in args["<room_name>"]:
             room = room.capitalize()
             room_names.append(room)
-        room_type = "office" if args['office'] else "livingspace"
+        room_type = args['<room_type>'].lower()
         print Amity().create_room(room_names, room_type)
 
     @docopt_cmd

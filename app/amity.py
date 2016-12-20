@@ -45,10 +45,11 @@ class Amity(object):
         receives the desired room name and the room type to create the rooms.
         The room name is a list to allow the creation of several rooms at once.
         '''
-
+        if room_type != 'office' and room_type != 'livingspace':
+            return red('Enter a valid room type.(office|livingspace)')
         for room_name in room_names:
             if room_name.isalpha() is False:
-                return red(room_name + ' is an invalid room name type!')
+                return red(room_name + ' is an invalid name type!')
             if room_name in Room.rooms['office'] or room_name in Room.rooms['livingspace']:
                 return red('A room with that name exists. Select another name')
             if room_type == 'office':
@@ -57,6 +58,7 @@ class Amity(object):
             elif room_type == 'livingspace':
                 Livingspace(room_name)
                 Amity.livingspaces += 1
+            print blue(room_name +' has been created.')
         return (green('There are ' + str(Amity.offices) + ' offices and ' + str(Amity.livingspaces) + ' livingspaces in the system.'))
 
     def add_person(self, firstname, surname, designation, resident="N"):
@@ -107,6 +109,8 @@ class Amity(object):
             Room.allocate_room(ID, random_room)
             Amity.available_rooms = []
             return (cyan('and has been allocated space in ' + str(random_room)))
+        print Room.rooms[room_type][room]['Total_occupants']
+        print Room.rooms[room_type][room]['Max_occupants']
 
     def reallocate(self, ID, room_name):
         ''' This method provides the option of reallocating a person to a
@@ -118,12 +122,16 @@ class Amity(object):
             return (red('No such room exists'))
         if ID not in Person.people['staff'] and ID not in Person.people['fellow']:
             return (red('No person with that ID. ID is case sensitive.'))
+        if ID in Person.people['staff'] and room_name in Room.rooms['livingspace']:
+            return(red('As staff you cannot be allocated living space'))
         if room_name in Room.rooms['office']:
             if Room.rooms['office'][room_name]['Total_occupants'] == 6:
                 return(red('The office %s is full to capacity.' % room_name))
             else:
                 for key in Room.rooms['office']:
-                    if ID in Room.rooms['office'][key]['Occupants']:
+                    if ID in Room.rooms['office'][key]['Occupants'] and room_name == key:
+                        return red('Person is currently placed in that room.')
+                    elif ID in Room.rooms['office'][key]['Occupants']:
                         Room.rooms['office'][key]['Occupants'].remove(ID)
                         Room.rooms['office'][key]['Total_occupants'] -= 1
         if room_name in Room.rooms['livingspace']:
@@ -131,25 +139,25 @@ class Amity(object):
                 return (red('The livingspace %s is full to capacity.' % room_name))
             else:
                 for key in Room.rooms['livingspace']:
+                    if ID in Room.rooms['livingspace'][key]['Occupants'] and room_name == key:
+                        return red('Person is currently placed in that room.')
                     if ID in Room.rooms['livingspace'][key]['Occupants']:
                         Room.rooms['livingspace'][key]['Occupants'].remove(ID)
                         Room.rooms['livingspace'][key]['Total_occupants'] -= 1
-        if ID in Person.people['staff'] and room_name in Room.rooms['livingspace']:
-            print (red('As staff you cannot be allocated living space'))
-            return(red('As staff you cannot be allocated living space'))
+        if ID in Amity.unallocated_people:
+            Amity.unallocated_people.remove(ID)
         if room_name in Room.rooms['office']:
             room_type = 'office'
         else:
             room_type = 'livingspace'
         Room.rooms[room_type][room_name]['Occupants'].append(ID)
         Room.rooms[room_type][room_name]['Total_occupants'] += 1
-        return str(Person.get_details(ID)) + ' has been rellocated to {}'.format(room_name)
+        return green(str(Person.get_details(ID)) + ' has been rellocated to {}'.format(room_name))
 
     def print_allocations(self, filename=None):
         '''This method displays the all the allocations in the system by
         showing each room name and its corresponding occupants.There is an
         option of printing out this information on a text file'''
-
         if filename is not None and type(filename) is str:
             try:
                 os.remove(filename)
@@ -162,7 +170,7 @@ class Amity(object):
         if not Room.rooms['office'] and not Room.rooms['livingspace']:
             print (red('There are no rooms in the system at the moment.'))
             return ('There are no rooms in the system at the moment.')
-        elif Room.rooms['office'] or Room.rooms['livingspace']:
+        elif Room.rooms['office']:
             print (cyan('\n\t Office Allocations'))
             print '*' * 40
             for key in Room.rooms['office']:
@@ -185,6 +193,7 @@ class Amity(object):
                             output += '\n----------------------------\n'
                             output += ', '.join(off_occupants) + '\n'
                             f.write(output)
+        if Room.rooms['livingspace']:
             print (cyan('\n\t Livingspace Allocations'))
             print '*' * 40
             for key in Room.rooms['livingspace']:
@@ -207,7 +216,8 @@ class Amity(object):
                             output += '\n----------------------------\n'
                             output += ', '.join(liv_occupants) + '\n'
                             f.write(output)
-                    print green('Allocations printed. Check file.')
+        if filename is not None and type(filename) is str:
+            print green('Allocations printed. Check file.')
         allocations['off_occupants'] = off_occupants
         allocations['liv_occupants'] = liv_occupants
         return allocations
@@ -354,7 +364,7 @@ class Amity(object):
                     final_dict[variety][str(entry[0])][
                         'Max_occupants'] = str(entry[2])
                     final_dict[variety][str(entry[0])][
-                        'Total_occupants'] = str(entry[3])
+                        'Total_occupants'] = entry[3]
                     if len(entry[4]) != 0:
                         final_dict[variety][str(entry[0])][
                             'Occupants'] = str(entry[4]).split(', ')
