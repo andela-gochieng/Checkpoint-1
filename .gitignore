@@ -37,4 +37,3 @@ ENV/
 amity-venv/
 
 .DS_Store
-*.db
