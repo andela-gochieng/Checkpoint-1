@@ -1,10 +1,7 @@
 # Checkpoint-1
 [![Coverage Status](https://coveralls.io/repos/github/andela-gochieng/Checkpoint-1/badge.svg?branch=develop&update=2)](https://coveralls.io/github/andela-gochieng/Checkpoint-1?branch=develop)
-[![Code Climate](https://codeclimate.com/repos/5836fc96b211081579003726/badges/f052d6d199ff57cd1dd1/gpa.svg)](https://codeclimate.com/repos/5836fc96b211081579003726/feed)
 [![Build Status](https://travis-ci.org/andela-gochieng/Checkpoint-1.svg?branch=develop&update=1)](https://travis-ci.org/andela-gochieng/Checkpoint-1)
 [![Code Health](https://landscape.io/github/andela-gochieng/Checkpoint-1/develop/landscape.svg?style=flat&update=1)](https://landscape.io/github/andela-gochieng/Checkpoint-1/master)
-[![Issue Count](https://codeclimate.com/repos/5836fc96b211081579003726/badges/f052d6d199ff57cd1dd1/issue_count.svg)](https://codeclimate.com/repos/5836fc96b211081579003726/feed)
-[![Test Coverage](https://codeclimate.com/repos/5836fc96b211081579003726/badges/f052d6d199ff57cd1dd1/coverage.svg)](https://codeclimate.com/repos/5836fc96b211081579003726/coverage)
 ## Amity - Automated Space Allocation System
 Amity is a system that automates the allocation of rooms in a facility. It is especially modelled for the Andela fellowship. It keeps track of all the rooms available and the occupants therin. The created rooms can either be offices which hold a maximum of 6 people or livingspaces which hold only 4 people. The people added are either fellows or staff and are placed in rooms automatically after addition. It allows for the:
 * Creation of rooms
@@ -17,11 +14,11 @@ Amity is a system that automates the allocation of rooms in a facility. It is es
 ### Getting started
 Clone this repo from Github to your local machine:
 ```
-git clone https://github.com/andela-gochieng/checkpoint-1
+git clone https://github.com/andela-gochieng/Checkpoint-1.git
 ```
 cd into the checkpoint-1 folder
 ```
-cd checkpoint-1
+cd Checkpoint-1
 ```
 Create a virtual environment
 
