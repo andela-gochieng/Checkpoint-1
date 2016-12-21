@@ -290,7 +290,7 @@ class Amity(object):
                             resident = data_list[3]
                         else:
                             resident = 'N'
-                        self.add_person(firstname, surname, designation, resident)
+                        print self.add_person(firstname, surname, designation, resident)
                     return green('Success! Data added to the system')
             except:
                 return (red('No such file exists!'))
@@ -302,6 +302,11 @@ class Amity(object):
         in the parameter savefile which is a file to which the database is to
         be saved to.
         """
+
+        def is_allocated(id):
+            if id in self.unallocated_people:
+                return "NO"
+            return "YES"
 
         def db_loader(items, variety):
             for item in items:
@@ -316,8 +321,8 @@ class Amity(object):
                                     ', '.join(i['Occupants'])))
                 elif variety == "fellow" or variety == "staff":
                     cursor.execute('''INSERT INTO People (ID, Name, Designation,
-                     Resident) VALUES(?, ?, ?, ?)''', (item, i[
-                                   'Name'], variety, i['Resident']))
+                     Resident, Allocated) VALUES(?, ?, ?, ?, ?)''', (item, i[
+                                   'Name'], variety, i['Resident'], is_allocated(item)))
 
         self.dbError = False
         connect = db.connect(savefile)
@@ -331,7 +336,7 @@ class Amity(object):
                     Total_occupants INT NOT NULL, Occupants TEXT);
                     CREATE TABLE People(ID TEXT PRIMARY KEY NOT NULL,
                     Name TEXT NOT NULL, Designation TEXT NOT NULL,
-                    Resident TEXT NOT NULL);
+                    Resident TEXT NOT NULL, Allocated TEXT NOT NULL);
                     ''')
             print 'The database is now setup'
             rooms = Room.rooms
@@ -362,7 +367,7 @@ class Amity(object):
                     final_dict[variety][str(entry[0])][
                         'Room_name'] = str(entry[0])
                     final_dict[variety][str(entry[0])][
-                        'Max_occupants'] = str(entry[2])
+                        'Max_occupants'] = entry[2]
                     final_dict[variety][str(entry[0])][
                         'Total_occupants'] = entry[3]
                     if len(entry[4]) != 0:
@@ -376,6 +381,8 @@ class Amity(object):
                     final_dict[variety][str(entry[0])]['Name'] = str(entry[1])
                     final_dict[variety][str(entry[0])][
                         'Resident'] = str(entry[3])
+                    if entry[4] == "NO":
+                        self.unallocated_people.append(entry[0])
             return final_dict
 
         self.dbError = False
