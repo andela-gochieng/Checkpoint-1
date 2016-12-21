@@ -307,7 +307,7 @@ class TestAmity(unittest.TestCase):
         if os.path.exists('app'):
             os.chdir('app')
         self.assertEqual(
-            self.amity.load_state('infile.db'),
+            self.amity.load_state('new_infile.db'),
             "Data has been successfully loaded from the database."
         )
 
