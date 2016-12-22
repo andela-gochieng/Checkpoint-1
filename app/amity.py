@@ -74,11 +74,11 @@ class Amity(object):
             return red('Respond with Y or N for residence')
         if designation != 'staff' and designation != 'fellow':
             return red('Enter a valid designation')
-        if designation == 'staff' and resident == 'Y':
-            return red('Staff cannot be allocated livingspaces.')
         elif designation == 'staff':
             ID = 'ST0' + str(len(Person.people['staff'].keys()) + 1)
             Staff(firstname, surname, ID)
+            if resident == 'Y':
+                print red('Staff cannot be allocated livingspaces.')
             return (cyan(str(firstname) + ' ' + str(surname) + ' has been created as a staff') + " " + self.allocate_room(ID, 'office'))
         elif designation == 'fellow':
             ID = 'FE0' + str(len(Person.people['fellow'].keys()) + 1)
